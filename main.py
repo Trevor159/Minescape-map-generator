@@ -1,15 +1,14 @@
 import glob
 import os
-
-# from amulet.world_interface.formats import Format
+from distutils.dir_util import copy_tree
 from amulet import Block
 from amulet.api.chunk import Chunk
 from amulet.api.errors import ChunkDoesNotExist
 from amulet.utils import block_coords_to_chunk_coords
-from amulet.world_interface.formats.anvil.anvil_format import AnvilFormat
+from amulet.world_interface import load_world
 from amulet.api.world import World
 
-def set_block(world:World, x:int, y:int, z:int):
+def set_block(world: World, x: int, y: int, z: int):
     if not (0 <= y <= 255):
         raise IndexError("The supplied Y coordinate must be between 0 and 255")
 
@@ -23,13 +22,23 @@ def set_block(world:World, x:int, y:int, z:int):
 
     offset_x, offset_z = x - 16 * cx, z - 16 * cz
     chunk.blocks[offset_x, y, offset_z] = world.palette.get_add_block(Block(namespace="universal_minecraft", base_name="diamond_block"))
-    world.put_chunk(chunk)
+    chunk.changed = True
 
+
+def handle_files(empty_world_path: str, output_world_path: str):
+    if os.path.exists(output_world_path):
+        os.rmdir(output_world_path)
+    os.mkdir(output_world_path)
+    copy_tree(empty_world_path, output_world_path)
 
 
 if __name__ == "__main__":
-    worldpath = "input/testworld1"
-    world = World(worldpath, AnvilFormat(worldpath))
+    empty_world_path = "resources/emptymap"
+    # WARNING ANY DIRECTORY AT THE OUTPUT PATH WILL BE DELETED
+    output_world_path = "output/testworld1"
+
+    handle_files(empty_world_path, output_world_path)
+    world = load_world(output_world_path)
     try:
         cx, cz = block_coords_to_chunk_coords(0, 0);
         chunk = world.get_chunk(cx, cz)
