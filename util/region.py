@@ -7,7 +7,6 @@ class Region:
         self.tiles = numpy.empty((4, 64, 64), dtype=Tile)
 
 
-
 class Tile:
     def __init__(self):
         self.height = None
