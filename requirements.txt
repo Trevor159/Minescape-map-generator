@@ -1,4 +1,4 @@
-numpy==1.15.2
+numpy==1.22.0
 git+git://github.com/Amulet-Team/Amulet-NBT.git
 git+https://github.com/gentlegiantJGC/PyMCTranslate.git@impl-entities
 git+git://github.com/Amulet-Team/Amulet-Core.git
